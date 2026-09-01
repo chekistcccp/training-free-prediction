@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+models/
+data/MSD_Task10_Colon/
+data/StageII-Colorectal-CT/
+data/processed/
+outputs/
+*.log
+.DS_Store
