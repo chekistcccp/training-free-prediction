@@ -20,7 +20,7 @@ class Qwen35MedicalReasoner:
         if q not in (None,{}): raise RuntimeError(f'Quantized model detected: {q}')
         self.device=next(self.model.parameters()).device; self.tokenizer=self.processor.tokenizer
     def _messages(self,images,text):
-        c=[{'type':'image','path':str(Path(p).resolve())} for p in images]; c.append({'type':'text','text':text})
+        c=[{'type':'image','url':Path(p).resolve().as_uri()} for p in images]; c.append({'type':'text','text':text})
         return [{'role':'system','content':[{'type':'text','text':'You are a careful CT image reasoning assistant. Describe only visible evidence. Follow the requested output format exactly.'}]},{'role':'user','content':c}]
     def _templ(self,messages):
         kw=dict(add_generation_prompt=True,tokenize=True,return_dict=True,return_tensors='pt')
