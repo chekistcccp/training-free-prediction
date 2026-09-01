@@ -16,9 +16,18 @@ def main() -> None:
     args = parser.parse_args()
     cfg = load_yaml(args.config)
 
+    conda_prefix = os.environ.get("CONDA_PREFIX")
+    if not conda_prefix:
+        raise SystemExit(
+            "No active conda environment detected. Create and activate one manually before running ./run.sh."
+        )
+
     if sys.version_info < (3, 10):
         raise SystemExit("Python >=3.10 is required.")
 
+    print(f"Conda environment: {os.environ.get('CONDA_DEFAULT_ENV', 'unknown')}")
+    print(f"Conda prefix: {conda_prefix}")
+    print(f"Python executable: {sys.executable}")
     print(f"Python: {sys.version.split()[0]}")
     print(f"Platform: {platform.platform()}")
     if "microsoft" not in platform.release().lower() and "WSL" not in os.environ:
@@ -27,10 +36,12 @@ def main() -> None:
     try:
         import torch
     except ImportError as e:
-        raise SystemExit("PyTorch is not installed. run.sh should install requirements first.") from e
+        raise SystemExit(
+            "PyTorch is not installed in the active conda environment. Run: pip install -r requirements.txt"
+        ) from e
 
     if not torch.cuda.is_available():
-        raise SystemExit("CUDA is unavailable. Verify NVIDIA Windows driver + WSL CUDA support.")
+        raise SystemExit("CUDA is unavailable. Verify NVIDIA Windows driver + WSL CUDA support and your PyTorch build.")
     props = torch.cuda.get_device_properties(0)
     total_gib = props.total_memory / (1024**3)
     print(f"GPU: {props.name}")
