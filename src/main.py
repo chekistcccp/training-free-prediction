@@ -1,5 +1,6 @@
 from __future__ import annotations
 import argparse
+from .baselines import run_exhaustive_occlusion_baseline
 from .pipeline import ExperimentRunner
 from .utils import load_yaml
 
@@ -11,6 +12,7 @@ def main():
         if scores is None: scores=r.run_msd_slice_screening()
         if cfg['experiments'].get('run_msd_oracle_localization',True): r.run_msd_localization(scores,'oracle')
         if cfg['experiments'].get('run_msd_end_to_end_localization',True): r.run_msd_localization(scores,'end_to_end')
+        if cfg['experiments'].get('run_exhaustive_occlusion_baseline',True): run_exhaustive_occlusion_baseline(r)
     if a.command in {'all','stageii'} and cfg['experiments'].get('run_stageii_external',True): r.run_stageii_external()
 
 if __name__=='__main__': main()
